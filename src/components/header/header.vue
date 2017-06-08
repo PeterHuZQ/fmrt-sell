@@ -53,11 +53,31 @@
                 <div class="detail-main">
                     <!--名称-->
                     <h1 class="name">{{seller.name}}</h1>
-                    <star :size="48" :score="seller.score"></star>
+                    <div class="star-wrapper">
+                        <!--star组件-->
+                        <star :size="48" :score="seller.score"></star>
+                    </div>
+                    <!--title组件,优惠信息-->
+                    <flextitle :message="message1"></flextitle>
+                    <!--优惠活动列表-->
+                    <ul v-if="seller.supports" class="supports">
+                        <li class="support-item" v-for="item in seller.supports">
+                            <!--图片-->
+                            <span class="icon" :class="classMap[seller.supports[0].type]"></span>
+                            <!--文字-->
+                            <span class="text">{{seller.supports[0].description}}</span>
+                        </li>
+                    </ul>
+                    <!--title组件,商家公告-->
+                    <flextitle :message="message2"></flextitle>
+                    <!--商家公告内容-->
+                    <div class="bulletin">
+                        <p class="content">{{seller.bulletin}}</p>
+                    </div>
                 </div>
             </div>
             <!--关闭按钮-->
-            <div class="detail-close">
+            <div class="detail-close" @click="hideDetail">
                 <i class="icon-close"></i>
             </div>
         </div>
@@ -66,6 +86,7 @@
 
 <script type="text/ecmascript-6">
     import star from '../star/star.vue';
+    import flextitle from '../flextitle/flextitle.vue';
 
     export default {
         props: {
@@ -75,20 +96,27 @@
         },
         data() {
             return {
-                detailShow: false
+                detailShow: false,
+                message1: '优惠信息',
+                message2: '商家公告'
             };
         },
         methods: {
             // 点击展示公告及活动详情的方法
             showDetail() {
                 this.detailShow = true;
+            },
+            // 点击X关闭公告及活动详情的方法
+            hideDetail() {
+                this.detailShow = false;
             }
         },
         created() {
             this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
         },
         components: {
-            star
+            'star': star,
+            'flextitle': flextitle
         }
     };
 </script>
@@ -219,6 +247,8 @@
             // 内容超过屏幕高度可以滚动
             overflow: auto
             background: rgba(7, 17, 27, 0.8)
+            // IOS手机上设置背景模糊
+            backdrop-filter: blur(10px)
             // sticky-footers布局
             .detail-wrapper
                 width: 100%
@@ -234,7 +264,50 @@
                     .star-wrapper
                         margin-top: 18px
                         padding: 2px 0
+                        // 居中
                         text-align: center
+                    // 优惠活动列表
+                    .supports
+                        width: 80%
+                        margin: 0 auto
+                        .support-item
+                            padding: 0 12px
+                            margin-bottom: 12px
+                            font-size: 0
+                            &:last-child
+                                margin-bottom: 0
+                            // 图片
+                            .icon
+                                display: inline-block
+                                width: 16px
+                                height: 16px
+                                vertical-align: top
+                                margin-right: 6px
+                                background-size: 16px 16px
+                                background-repeat: no-repeat
+                                &.decrease
+                                    bg-image('decrease_2')
+                                &.discount
+                                    bg-image('discount_2')
+                                &.guarantee
+                                    bg-image('guarantee_2')
+                                &.invoice
+                                    bg-image('invoice_2')
+                                &.special
+                                    bg-image('special_2')
+                            // 文字
+                            .text
+                                line-height: 16px
+                                font-size: 12px
+                    // 商家公告内容
+                    .bulletin
+                        width: 80%
+                        // 水平居中
+                        margin: 0 auto
+                        .content
+                            padding: 0 12px
+                            line-height: 24px
+                            font-size: 12px 
             .detail-close
                 position: relative
                 width: 32px
