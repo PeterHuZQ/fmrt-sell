@@ -63,9 +63,9 @@
                     <ul v-if="seller.supports" class="supports">
                         <li class="support-item" v-for="item in seller.supports">
                             <!--图片-->
-                            <span class="icon" :class="classMap[seller.supports[0].type]"></span>
+                            <span class="icon" :class="classMap[item.type]"></span>
                             <!--文字-->
-                            <span class="text">{{seller.supports[0].description}}</span>
+                            <span class="text">{{item.description}}</span>
                         </li>
                     </ul>
                     <!--title组件,商家公告-->
@@ -142,11 +142,11 @@
                 display: inline-block
                 margin-left: 16px
                 .title
-                    margin: 2px 0 8px 0
+                    margin: 2px 47px 8px 0
                     .brand
                         display: inline-block
                         vertical-align: top
-                        width: 30px
+                        width: 38px
                         height: 18px
                         bg-image('brand')
                         background-size: 30px 18px
@@ -161,6 +161,7 @@
                     line-height: 12px
                     font-size: 12px
                 .support
+                    // 图片
                     .icon
                         display: inline-block
                         vertical-align: top
@@ -179,6 +180,7 @@
                             bg-image('invoice_1')
                         &.special
                             bg-image('special_1')
+                    // 文字
                     .text
                         line-height: 12px
                         font-size: 10px
