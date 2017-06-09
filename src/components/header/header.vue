@@ -58,7 +58,7 @@
                         <star :size="48" :score="seller.score"></star>
                     </div>
                     <!--title组件,优惠信息-->
-                    <flextitle :message="message1"></flextitle>
+                    <flex-title :message="message1"></flex-title>
                     <!--优惠活动列表-->
                     <ul v-if="seller.supports" class="supports">
                         <li class="support-item" v-for="item in seller.supports">
@@ -69,7 +69,7 @@
                         </li>
                     </ul>
                     <!--title组件,商家公告-->
-                    <flextitle :message="message2"></flextitle>
+                    <flex-title :message="message2"></flex-title>
                     <!--商家公告内容-->
                     <div class="bulletin">
                         <p class="content">{{seller.bulletin}}</p>
@@ -86,7 +86,7 @@
 
 <script type="text/ecmascript-6">
     import star from '../star/star.vue';
-    import flextitle from '../flextitle/flextitle.vue';
+    import flextitle from '../flex-title/flex-title.vue';
 
     export default {
         props: {
@@ -116,7 +116,7 @@
         },
         components: {
             'star': star,
-            'flextitle': flextitle
+            'flex-title': flextitle
         }
     };
 </script>
