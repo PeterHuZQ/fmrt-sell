@@ -46,7 +46,7 @@
             </ul>
         </div>
         <!--购物车组件-->
-        <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+        <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
     </div>
 </template>
 
@@ -81,6 +81,18 @@
                     }
                 }
                 return 0;
+            },
+            // 遍历购买按钮组件cartcontrol里的food.count，找到所有被选择的商品，传给购物车组件shopcart
+            selectFoods() {
+                let foods = [];
+                this.goods.forEach((good) => {
+                    good.foods.forEach((food) => {
+                        if (food.count) {
+                            foods.push(food);
+                        }
+                    });
+                });
+                return foods;
             }
         },
         created() {
