@@ -6,13 +6,16 @@
             <div class="content-left">
                 <!--Logo区块-->
                 <div class="logo-wrapper">
-                    <div class="logo">
-                        <i class="icon-shopping_cart"></i>
+                    <div class="logo" :class="{'highlight' :totalCount>0}">
+                        <i class="icon-shopping_cart" :class="{'highlight' :totalCount>0}"></i>
+                    </div>
+                    <div class="num" v-show="totalCount>0">
+                        {{totalCount}}
                     </div>
                 </div>
-                <!--价格-->
-                <div class="price">
-                    0元
+                <!--选择商品总价格-->
+                <div class="price" :class="{'highlight':totalPrice>0}">
+                    ￥{{totalPrice}}元
                 </div>
                 <!--描述:配送价-->
                 <div class="desc">
@@ -20,7 +23,11 @@
                 </div>
             </div>
             <!--右侧区块-->
-            <div class="content-right"></div>
+            <div class="content-right">
+                <div class="pay" :class="payClass">
+                    {{payDesc}}
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -28,6 +35,17 @@
 <script type="text/ecmascript-6">
     export default {
         props: {
+            selectFoods: {
+                type: Array,
+                default() {
+                    return [
+                        {
+                            price: 10,
+                            count: 1
+                        }
+                    ];
+                }
+            },
             deliveryPrice: {
                 type: Number,
                 default: 0
@@ -35,6 +53,43 @@
             minPrice: {
                 type: Number,
                 default: 0
+            }
+        },
+        computed: {
+            totalPrice() {
+                // 选择商品总价格
+                let total = 0;
+                this.selectFoods.forEach((food) => {
+                    total += food.price * food.count;
+                });
+                return total;
+            },
+            totalCount() {
+                // 选择商品总数量
+                let count = 0;
+                this.selectFoods.forEach((food) => {
+                    count += food.count;
+                });
+                return count;
+            },
+            payDesc() {
+                // 右侧区块文字
+                if (this.totalPrice === 0) {
+                    return `￥${this.minPrice}元起送`;
+                } else if (this.totalPrice < this.minPrice) {
+                    let diff = this.minPrice - this.totalPrice;
+                    return `还差￥${diff}元起送`;
+                } else {
+                    return '去结算';
+                }
+            },
+            payClass() {
+                // 右侧区块样式
+                if (this.totalPrice < this.minPrice) {
+                    return 'not-enough';
+                } else {
+                    return 'enough';
+                }
             }
         }
     };
@@ -82,8 +137,9 @@
                             line-height: 44px
                             font-size: 24px
                             color: #80858a
-                        &.highlight
-                            color: #fff
+                            &.highlight
+                                color: #fff
+                    // 选择商品总数量
                     .num
                         position: absolute
                         top: 0
@@ -119,4 +175,16 @@
             .content-right
                 flex: 0 0 105px
                 width: 105px
+                .pay
+                    height: 48px
+                    line-height: 48px
+                    text-align: center
+                    font-size: 12px
+                    font-weight: 700
+                    &.not-enough
+                        background: #2b333b
+                    &.enough
+                        background: #00b43c
+                        color: #fff
+
 </style>
