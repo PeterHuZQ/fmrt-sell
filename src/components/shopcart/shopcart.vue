@@ -23,37 +23,38 @@
                 </div>
             </div>
             <!--右侧区块-->
-            <div class="content-right">
+            <div class="content-right" @click="pay">
                 <div class="pay" :class="payClass">
                     {{payDesc}}
                 </div>
             </div>
-            <!--购物车详情页-->
-            <div class="shopcart-list" v-show="listShow">
-                <div class="list-header">
-                    <h1 class="title">购物车</h1>
-                    <span class="empty">清空</span>
-                </div>
-                <div class="list-content">
-                    <ul>
-                        <li class="food" v-for="food in selectFoods">
-                            <span class="name">{{food.name}}</span>
-                            <div class="price">
-                                <span>￥{{food.price*food.count}}</span>
-                            </div>
-                            <div class="cartcontrol-wrapper">
-                                <!--购买按钮组件-->
-                                <cartcontrol :food="food"></cartcontrol>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
+        </div>
+        <!--购物车详情页-->
+        <div class="shopcart-list" v-show="listShow">
+            <div class="list-header">
+                <h1 class="title">购物车</h1>
+                <span class="empty" @click="empty">清空</span>
+            </div>
+            <div class="list-content" ref="listContent">
+                <ul>
+                    <li class="food" v-for="food in selectFoods">
+                        <span class="name">{{food.name}}</span>
+                        <div class="price">
+                            <span>￥{{food.price*food.count}}</span>
+                        </div>
+                        <div class="cartcontrol-wrapper">
+                            <!--购买按钮组件-->
+                            <cartcontrol :food="food"></cartcontrol>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
 </template>
 
 <script type="text/ecmascript-6">
+    import BScroll from 'better-scroll';
     import cartcontrol from '../cartcontrol/cartcontrol.vue';
 
     export default {
@@ -126,6 +127,18 @@
                     return false;
                 }
                 let show = !this.fold;
+                if (show) {
+                    // 初始化better-scroll
+                    this.$nextTick(() => {
+                        if (!this.scroll) {
+                            this.scroll = new BScroll(this.$refs.listContent, {
+                                click: true
+                            });
+                        } else {
+                            this.scroll.refresh();
+                        }
+                    });
+                }
                 return show;
             }
         },
@@ -135,6 +148,18 @@
                     return;
                 }
                 this.fold = !this.fold;
+            },
+            empty() {
+                // 情况购物车
+                this.selectFoods.forEach((food) => {
+                    food.count = 0;
+                });
+            },
+            pay() {
+                if (this.totalPrice < this.minPrice) {
+                    return;
+                }
+                window.alert(`支付${this.totalPrice}元`);
             }
         },
         components: {
@@ -234,53 +259,53 @@
                     &.enough
                         background: #00b43c
                         color: #fff
-            .shopcart-list
-                position: absolute
-                left: 0
-                top: 0
-                z-index: -1
-                width: 100%
-                transform: translate3d(0, -100%, 0)
-                .list-header
-                    height: 40px
-                    line-height: 40px
-                    padding: 0 18px
-                    background: #f3f5f7
-                    border-bottom: 1px solid rgba(7, 17, 27, 0.1) 
-                    .title
-                        float: left
+        .shopcart-list
+            position: absolute
+            left: 0
+            top: 0
+            z-index: -1
+            width: 100%
+            transform: translate3d(0, -100%, 0)
+            .list-header
+                height: 40px
+                line-height: 40px
+                padding: 0 18px
+                background: #f3f5f7
+                border-bottom: 1px solid rgba(7, 17, 27, 0.1) 
+                .title
+                    float: left
+                    font-size: 14px
+                    color: rgb(7, 17, 27)
+                    margin:0
+                    padding:0
+                .empty
+                    float: right
+                    font-size: 12px
+                    color: rgb(0, 160, 220)
+            .list-content
+                padding: 0 18px
+                max-height: 217px
+                overflow: hidden
+                background: #fff
+                .food
+                    position: relative
+                    padding: 12px 0
+                    box-sizing: border-box
+                    border-1px(rgba(7, 17, 27, 0.1))
+                    .name
+                        line-height: 24px
                         font-size: 14px
                         color: rgb(7, 17, 27)
-                        margin:0
-                        padding:0
-                    .empty
-                        float: right
-                        font-size: 12px
-                        color: rgb(0, 160, 220)
-                .list-content
-                    padding: 0 18px
-                    max-height: 217px
-                    overflow: hidden
-                    background: #fff
-                    .food
-                        position: relative
-                        padding: 12px 0
-                        box-sizing: border-box
-                        border-1px(rgba(7, 17, 27, 0.1))
-                        .name
-                            line-height: 24px
-                            font-size: 14px
-                            color: rgb(7, 17, 27)
-                        .price
-                            position: absolute
-                            right: 90px
-                            bottom: 12px
-                            line-height: 24px
-                            font-size: 14px
-                            font-weight: 700
-                            color: rgb(240, 20, 20)
-                        .cartcontrol-wrapper
-                            position: absolute
-                            right: 0
-                            bottom: 6px
+                    .price
+                        position: absolute
+                        right: 90px
+                        bottom: 12px
+                        line-height: 24px
+                        font-size: 14px
+                        font-weight: 700
+                        color: rgb(240, 20, 20)
+                    .cartcontrol-wrapper
+                        position: absolute
+                        right: 0
+                        bottom: 6px
 </style>
