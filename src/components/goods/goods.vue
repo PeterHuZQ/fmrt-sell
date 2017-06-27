@@ -152,7 +152,7 @@
                 let el = foodList[index];
                 this.foodsScroll.scrollToElement(el, 300);
             },
-            // 点击事件:展开商品详情页组件food.vue
+            // 点击事件: 展开商品详情页组件food.vue
             selectFood(food, event) {
                 if (!event._constructed) {
                     return;

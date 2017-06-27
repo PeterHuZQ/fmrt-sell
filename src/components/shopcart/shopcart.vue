@@ -23,7 +23,7 @@
                 </div>
             </div>
             <!--右侧区块-->
-            <div class="content-right" @click="pay">
+            <div class="content-right" @click.stop="pay">
                 <div class="pay" :class="payClass">
                     {{payDesc}}
                 </div>
