@@ -1,0 +1,3 @@
+export const ADD_SHOPCART = 'ADD_SHOPCART';
+export const REDUCE_SHOPCART = 'REDUCE_SHOPCART';
+export const EMPTY_SHOPCART = 'EMPTY_SHOPCART';

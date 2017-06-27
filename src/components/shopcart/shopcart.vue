@@ -56,21 +56,11 @@
 <script type="text/ecmascript-6">
     import BScroll from 'better-scroll';
     import cartcontrol from '../cartcontrol/cartcontrol.vue';
-    import {mapState, mapMutations} from 'vuex';
+    import {mapState} from 'vuex';
+    import * as types from '../../store/mutation-types';
 
     export default {
         props: {
-            selectFoods: {
-                type: Array,
-                default() {
-                    return [
-                        {
-                            price: 10,
-                            count: 1
-                        }
-                    ];
-                }
-            },
             deliveryPrice: {
                 type: Number,
                 default: 0
@@ -90,19 +80,23 @@
             ...mapState([
                 'cartList'
             ]),
+            // 监听cartList变化，更新当前商铺的购物车信息selectFoods
+            selectFoods: function () {
+                return Object.assign({}, this.cartList);
+            },
             totalPrice() {
                 // 选择商品总价格
                 let total = 0;
-                this.selectFoods.forEach((food) => {
-                    total += food.price * food.count;
+                Object.values(this.selectFoods).forEach((item, index) => {
+                    total += item.count * item.price;
                 });
                 return total;
             },
             totalCount() {
                 // 选择商品总数量
                 let count = 0;
-                this.selectFoods.forEach((food) => {
-                    count += food.count;
+                Object.values(this.selectFoods).forEach((item, index) => {
+                    count += item.count;
                 });
                 return count;
             },
@@ -147,8 +141,6 @@
             }
         },
         methods: {
-            ...mapMutations([
-            ]),
             toggleList() {
                 if (!this.totalCount) {
                     return;
@@ -156,10 +148,8 @@
                 this.fold = !this.fold;
             },
             empty() {
-                // 情况购物车
-                this.selectFoods.forEach((food) => {
-                    food.count = 0;
-                });
+                // 清空购物车
+                this.$store.commit(types.EMPTY_SHOPCART);
             },
             pay() {
                 if (this.totalPrice < this.minPrice) {
