@@ -1,11 +1,11 @@
 <template>
     <div class="cartcontrol">
         <!--减少-->
-        <div class="cart-decrease icon-remove_circle_outline" v-show="food.count>0" @click="decreaseCart"></div>
+        <div class="cart-decrease icon-remove_circle_outline" v-show="food.count>0" @click.stop="decreaseCart"></div>
         <!--数量-->
         <div class="cart-count" v-show="food.count>0">{{food.count}}</div>
         <!--增加-->
-        <div class="cart-add icon-add_circle" @click="addCart"></div>
+        <div class="cart-add icon-add_circle" @click.stop="addCart"></div>
     </div>
 </template>
 

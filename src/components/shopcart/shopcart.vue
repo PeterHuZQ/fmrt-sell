@@ -56,6 +56,7 @@
 <script type="text/ecmascript-6">
     import BScroll from 'better-scroll';
     import cartcontrol from '../cartcontrol/cartcontrol.vue';
+    import {mapState, mapMutations} from 'vuex';
 
     export default {
         props: {
@@ -86,6 +87,9 @@
             };
         },
         computed: {
+            ...mapState([
+                'cartList'
+            ]),
             totalPrice() {
                 // 选择商品总价格
                 let total = 0;
@@ -143,6 +147,8 @@
             }
         },
         methods: {
+            ...mapMutations([
+            ]),
             toggleList() {
                 if (!this.totalCount) {
                     return;

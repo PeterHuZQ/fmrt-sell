@@ -16,7 +16,7 @@
                 <li v-for="item in goods" class="food-list food-list-hook">
                     <h1 class="title">{{item.name}}</h1>
                     <ul>
-                        <li v-for="food in item.foods" class="food-item border-1px">
+                        <li v-for="food in item.foods" class="food-item border-1px" @click="selectFood(food,$event)">
                             <!--商品图片-->
                             <div class="icon">
                                 <img width="57" height="57" :src="food.icon">
@@ -47,6 +47,8 @@
         </div>
         <!--购物车组件-->
         <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+        <!--商品详情页组件-->
+        <food :food="selectedFood" ref="food"></food>
     </div>
 </template>
 
@@ -54,7 +56,8 @@
     import BScroll from 'better-scroll';
     import shopcart from '../shopcart/shopcart.vue';
     import cartcontrol from '../cartcontrol/cartcontrol.vue';
-    
+    import food from '../food/food.vue';
+
     const ERR_OK = 0;
 
     export default {
@@ -67,7 +70,8 @@
             return {
                 goods: [],
                 listHeight: [],
-                scrollY: 0
+                scrollY: 0,
+                selectedFood: {}
             };
         },
         computed: {
@@ -147,11 +151,21 @@
                 let foodList = this.$refs.foodsWrapper.getElementsByClassName('food-list-hook');
                 let el = foodList[index];
                 this.foodsScroll.scrollToElement(el, 300);
+            },
+            // 点击事件:展开商品详情页组件food.vue
+            selectFood(food, event) {
+                if (!event._constructed) {
+                    return;
+                }
+                this.selectedFood = food;
+                // 调用子组件food.vue里的show()方法
+                this.$refs.food.show();
             }
         },
         components: {
             'shopcart': shopcart,
-            'cartcontrol': cartcontrol
+            'cartcontrol': cartcontrol,
+            'food': food
         }
     };
 </script>
