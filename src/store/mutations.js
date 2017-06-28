@@ -15,7 +15,7 @@ export default {
         }
         state.cartList = { ...cart };
     },
-    [types.REDUCE_SHOPCART](state, {food_id, name, price}) {
+    [types.REDUCE_SHOPCART](state, {food_id}) {
         let cart = state.cartList;
         cart[food_id]['count']--;
         state.cartList = { ...cart };

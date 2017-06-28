@@ -20,7 +20,7 @@
                     <!--购买按钮组件-->
                     <cartcontrol :food="food"></cartcontrol>
                 </div>
-                <div class="buy" v-show="!food.count || food.count===0" @click.stop="addFirst">加入购物车</div>
+                <div class="buy" v-show="(selectFoods[food.food_id]?selectFoods[food.food_id].count===0:true)" @click.stop="addFirst">加入购物车</div>
             </div>
             <split v-show="food.info"></split>
             <div class="info" v-show="food.info">
@@ -32,8 +32,10 @@
 </template>
 
 <script type="text/ecmascript-6">
+    import * as types from '../../store/mutation-types';
+    import {mapState} from 'vuex';
+
     import BScroll from 'better-scroll';
-    import Vue from 'vue';
     import cartcontrol from '../cartcontrol/cartcontrol.vue';
     import split from '../split/split.vue';
 
@@ -48,6 +50,15 @@
                 // 用于表示商品详情页是收起还是展开状态
                 showFlag: false
             };
+        },
+        computed: {
+            ...mapState([
+                'cartList'
+            ]),
+            // 监听cartList变化，更新当前商铺的购物车信息selectFoods
+            selectFoods: function () {
+                return Object.assign({}, this.cartList);
+            }
         },
         methods: {
             show() {
@@ -73,7 +84,7 @@
                 if (!event._constructed) {
                     return;
                 }
-                Vue.set(this.food, 'count', 1);
+                this.$store.commit(types.ADD_SHOPCART, { food_id: this.food.food_id, name: this.food.name, price: this.food.price });
             }
         },
         components: {

@@ -1,7 +1,6 @@
 <template>
     <div class="cartcontrol">
         <!--减少-->
-        {{selectFoods[food.food_id]}}
         <div class="cart-decrease icon-remove_circle_outline" v-show="selectFoods[food.food_id]?selectFoods[food.food_id].count>0:false" @click.stop="decreaseCart"></div>
         <!--数量-->
         <div class="cart-count" v-show="selectFoods[food.food_id]?selectFoods[food.food_id].count:''">{{selectFoods[food.food_id]?selectFoods[food.food_id].count:''}}</div>
@@ -21,7 +20,7 @@
             }
         },
         computed: {
-             ...mapState([
+            ...mapState([
                 'cartList'
             ]),
             // 监听cartList变化，更新当前商铺的购物车信息selectFoods
@@ -35,16 +34,14 @@
                 if (!event._constructed) {
                    return;
                 }
-                console.log(this.food);
                 this.$store.commit(types.ADD_SHOPCART, { food_id: this.food.food_id, name: this.food.name, price: this.food.price });
-                console.log(this.cartList);
             },
             decreaseCart(event) {
                 // 防止PC端被多次点击
                 if (!event._constructed) {
                     return;
                 }
-                this.$store.commit(types.REDUCE_SHOPCART, { food_id: this.food.food_id, name: this.food.name, price: this.food.price });
+                this.$store.commit(types.REDUCE_SHOPCART, { food_id: this.food.food_id });
             }
         }
     };
