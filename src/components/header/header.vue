@@ -61,7 +61,7 @@
                     <flex-title :message="message1"></flex-title>
                     <!--优惠活动列表-->
                     <ul v-if="seller.supports" class="supports">
-                        <li class="support-item" v-for="item in seller.supports">
+                        <li class="support-item" v-for="item in seller.supports" :key="item.id">
                             <!--图片-->
                             <span class="icon" :class="classMap[item.type]"></span>
                             <!--文字-->

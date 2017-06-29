@@ -1,12 +1,14 @@
 <template>
     <div v-show="showFlag" class="food" ref="food">
         <div class="food-content">
+            <!--商品图片-->
             <div class="image-header">
                 <img :src="food.image">
                 <div class="back" @click="hide">
                     <i class="icon-arrow_lift"></i>
                 </div>
             </div>
+            <!--商品信息-->
             <div class="content">
                 <h1 class="title">{{food.name}}</h1>
                 <div class="detail">
@@ -22,10 +24,20 @@
                 </div>
                 <div class="buy" v-show="(selectFoods[food.food_id]?selectFoods[food.food_id].count===0:true)" @click.stop="addFirst">加入购物车</div>
             </div>
+            <!--分割线组件split-->
             <split v-show="food.info"></split>
+            <!--商品介绍-->
             <div class="info" v-show="food.info">
-                <h1 class="title">商品信息</h1>
+                <h1 class="title">商品介绍</h1>
                 <p class="text">{{food.info}}</p>
+            </div>
+            <!--分割线组件split-->
+            <split></split>
+            <!--商品评价-->
+            <div class="rating">
+                <h1 class="title">商品评价</h1>
+                <!--商品评价组件-->
+                <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></ratingselect>
             </div>
         </div>
     </div>
@@ -38,6 +50,11 @@
     import BScroll from 'better-scroll';
     import cartcontrol from '../cartcontrol/cartcontrol.vue';
     import split from '../split/split.vue';
+    import ratingselect from '../ratingselect/ratingselect.vue';
+
+    // const POSITIVE = 0;
+    // const NEGATIVE = 1;
+    const ALL = 2;
 
     export default {
         props: {
@@ -48,7 +65,15 @@
         data() {
             return {
                 // 用于表示商品详情页是收起还是展开状态
-                showFlag: false
+                showFlag: false,
+                // 传给商品评价组件ratingselect的默认参数，选择评价类型：ALL、POSITIVE、NEGATIVE
+                selectType: ALL,
+                onlyContent: true,
+                desc: {
+                    all: '全部',
+                    positive: '推荐',
+                    negative: '吐槽'
+                }
             };
         },
         computed: {
@@ -61,8 +86,12 @@
             }
         },
         methods: {
+            // 展现商品详情组件food
             show() {
                 this.showFlag = true;
+                // 传给商品评价组件ratingselect的参数
+                this.selectType = ALL;
+                this.onlyContent = false;
                 // 初始化better-scroll
                 this.$nextTick(() => {
                     if (!this.scroll) {
@@ -88,8 +117,10 @@
             }
         },
         components: {
+            // 注册组件
             'cartcontrol': cartcontrol,
-            'split': split
+            'split': split,
+            'ratingselect': ratingselect
         }
     };
 </script>
@@ -187,4 +218,12 @@
                 padding: 0 8px
                 font-size: 12px
                 color: rgb(77, 85, 93)
+        .rating
+            padding-top: 18px
+            .title
+                margin: 0
+                line-height: 14px
+                margin-left: 18px
+                font-size: 14px
+                color: rgb(7, 17, 27)
 </style>

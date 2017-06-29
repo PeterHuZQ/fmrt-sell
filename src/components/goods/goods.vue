@@ -3,7 +3,7 @@
         <!--左侧商品分类-->
         <div class="menu-wrapper" ref="menuWrapper">
             <ul>
-                <li v-for="(item,index) in goods" class="menu-item" :class="{'current':currentIndex===index}" @click="selectMenu(index,$event)">
+                <li v-for="(item,index) in goods" :key="item.id" class="menu-item" :class="{'current':currentIndex===index}" @click="selectMenu(index,$event)">
                     <span class="text border-1px">
                         <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
                     </span>
@@ -13,10 +13,10 @@
         <!--右侧商品列表-->
         <div class="foods-wrapper" ref="foodsWrapper">
             <ul>
-                <li v-for="item in goods" class="food-list food-list-hook">
+                <li v-for="item in goods" :key="item.id" class="food-list food-list-hook">
                     <h1 class="title">{{item.name}}</h1>
                     <ul>
-                        <li v-for="food in item.foods" class="food-item border-1px" @click="selectFood(food,$event)">
+                        <li v-for="food in item.foods" :key="food.food_id" class="food-item border-1px" @click="selectFood(food,$event)">
                             <!--商品图片-->
                             <div class="icon">
                                 <img width="57" height="57" :src="food.icon">
