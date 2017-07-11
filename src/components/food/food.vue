@@ -49,7 +49,7 @@
                                 <img class="avatar" width="12" height="12" :src="rating.avatar">
                             </div>
                             <!--时间区块-->
-                            <div class="time">{{rating.rateTime}}</div>
+                            <div class="time">{{rating.rateTime | formatDate}}</div>
                             <!--评论区块-->
                             <p class="text">
                                 <!--图标-->
@@ -73,6 +73,8 @@
     import cartcontrol from '../cartcontrol/cartcontrol.vue';
     import split from '../split/split.vue';
     import ratingselect from '../ratingselect/ratingselect.vue';
+
+    import {formatDate} from '../../common/js/date';
 
     const ALL = 2;
 
@@ -141,6 +143,12 @@
                 } else {
                     return type === this.selectType;
                 }
+            }
+        },
+        filters: {
+            formatDate(time) {
+                let date = new Date(time);
+                return formatDate(date, 'yyyy-MM-dd hh:mm');  // 调用引入的JS模块
             }
         },
         components: {
