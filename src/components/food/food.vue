@@ -37,7 +37,29 @@
             <div class="rating">
                 <h1 class="title">商品评价</h1>
                 <!--商品评价组件-->
-                <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc" :ratings="food.ratings"></ratingselect>
+                <ratingselect :desc="desc" :ratings="food.ratings"></ratingselect>
+                <div class="rating-wrapper">
+                    <!--当有ratings时，才显示-->
+                    <ul v-show="food.ratings && food.ratings.length">
+                        <!--needShow方法判断这条评价是否显示-->
+                        <li v-show="needShow(rating.rateType,rating.text)" :key="rating.id" v-for="rating in food.ratings" class="rating-item border-1px">
+                            <!--用户区块-->
+                            <div class="user">
+                                <span class="name">{{rating.username}}</span>
+                                <img class="avatar" width="12" height="12" :src="rating.avatar">
+                            </div>
+                            <!--时间区块-->
+                            <div class="time">{{rating.rateTime}}</div>
+                            <!--评论区块-->
+                            <p class="text">
+                                <!--图标-->
+                                <span :class="{'icon-thumb_up':rating.rateType===0,'icon-thumb_down':rating.rateType===1}"></span>{{rating.text}}
+                            </p>
+                        </li>
+                    </ul>
+                    <!--没有ratings时，才显示-->
+                    <div class="no-rating" v-show="!food.ratings || !food.ratings.length">暂无评价</div>
+                </div>
             </div>
         </div>
     </div>
@@ -52,8 +74,6 @@
     import split from '../split/split.vue';
     import ratingselect from '../ratingselect/ratingselect.vue';
 
-    // const POSITIVE = 0;
-    // const NEGATIVE = 1;
     const ALL = 2;
 
     export default {
@@ -66,9 +86,6 @@
             return {
                 // 用于表示商品详情页是收起还是展开状态
                 showFlag: false,
-                // 传给商品评价组件ratingselect的默认参数，选择评价类型：ALL、POSITIVE、NEGATIVE
-                selectType: ALL,
-                onlyContent: true,
                 desc: {
                     all: '全部',
                     positive: '推荐',
@@ -78,7 +95,9 @@
         },
         computed: {
             ...mapState([
-                'cartList'
+                'cartList',        // 加入购物车的商品列表
+                'selectType',      // 选择评价类型
+                'onlyContent'      // 选择是否只看有内容的评价
             ]),
             // 监听cartList变化，更新当前商铺的购物车信息selectFoods
             selectFoods: function () {
@@ -89,9 +108,6 @@
             // 展现商品详情组件food
             show() {
                 this.showFlag = true;
-                // 传给商品评价组件ratingselect的参数
-                this.selectType = ALL;
-                this.onlyContent = false;
                 // 初始化better-scroll
                 this.$nextTick(() => {
                     if (!this.scroll) {
@@ -114,6 +130,17 @@
                     return;
                 }
                 this.$store.commit(types.ADD_SHOPCART, { food_id: this.food.food_id, name: this.food.name, price: this.food.price });
+            },
+            // 判断这条评价是否显示
+            needShow(type, text) {
+                if (this.onlyContent && !text) {
+                    return false;
+                }
+                if (this.selectType === ALL) {
+                    return true;
+                } else {
+                    return type === this.selectType;
+                }
             }
         },
         components: {
@@ -226,4 +253,45 @@
                 margin-left: 18px
                 font-size: 14px
                 color: rgb(7, 17, 27)
-</style>
+            .rating-wrapper
+                padding: 0 18px
+                .rating-item
+                    position: relative
+                    padding: 16px 0
+                    border-1px(rgba(7, 17, 27, 0.1))
+                .user
+                    position: absolute
+                    right: 0
+                    top: 16px
+                    line-height: 12px
+                    font-size: 0
+                    .name
+                        display: inline-block
+                        margin-right: 6px
+                        vertical-align: top
+                        font-size: 10px
+                        color: rgb(147, 153, 159)
+                    .avatar
+                        border-radius: 50%
+                .time
+                    margin-bottom: 6px
+                    line-height: 12px
+                    font-size: 10px
+                    color: rgb(147, 153, 159)
+                .text
+                    line-height: 16px
+                    font-size: 12px
+                    color: rgb(7, 17, 27)
+                    .icon-thumb_up, .icon-thumb_down
+                        margin-right: 4px
+                        line-height: 16px
+                        font-size: 12px
+                    .icon-thumb_up
+                        color: rgb(0, 160, 220)
+                    .icon-thumb_down
+                        color: rgb(147, 153, 159)
+                .no-rating
+                    padding: 16px 0
+                    font-size: 12px
+                    color: rgb(147, 153, 159)
+    </style>

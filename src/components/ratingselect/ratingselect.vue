@@ -2,12 +2,12 @@
     <div class="ratingselect">
         <!--选择评价类型-->
         <div class="rating-type border-1px">
-            <span class="block positive" :class="{'active':selectType===2}">{{desc.all}}<span class="count">47</span></span>
-            <span class="block positive" :class="{'active':selectType===0}">{{desc.positive}}<span class="count">40</span></span>
-            <span class="block negative" :class="{'active':selectType===1}">{{desc.negative}}<span class="count">7</span></span>
+            <span @click="select(2,$event)" class="block positive" :class="{'active':selectType===2}">{{desc.all}}<span class="count">{{ratings.length}}</span></span>
+            <span @click="select(0,$event)" class="block positive" :class="{'active':selectType===0}">{{desc.positive}}<span class="count">{{positives.length}}</span></span>
+            <span @click="select(1,$event)" class="block negative" :class="{'active':selectType===1}">{{desc.negative}}<span class="count">{{negatives.length}}</span></span>
         </div>
         <!--选择是否只看有内容的评价-->
-        <div class="switch" :class="{'on':onlyContent}">
+        <div @click="toggleContent" class="switch" :class="{'on':onlyContent}">
             <!--图标按钮-->
             <span class="icon-check_circle"></span>
             <span class="text">只看有内容的评价</span>
@@ -16,9 +16,11 @@
 </template>
 
 <script type="text/ecmascript-6">
-    // const POSITIVE = 0;
-    // const NEGATIVE = 1;
-    const ALL = 2;
+    import * as types from '../../store/mutation-types';
+    import {mapState} from 'vuex';
+
+    const POSITIVE = 0;
+    const NEGATIVE = 1;
 
     export default {
         props: {
@@ -27,16 +29,6 @@
                 default() {
                     return [];
                 }
-            },
-            // 选择评价类型：ALL、POSITIVE、NEGATIVE
-            selectType: {
-                type: Number,
-                default: ALL
-            },
-            // 选择是否只看有内容的评价
-            onlyContent: {
-                type: Boolean,
-                default: false
             },
             // 评价类型文字描述
             desc: {
@@ -48,6 +40,42 @@
                         negative: '不满意'
                     };
                 }
+            }
+        },
+        computed: {
+            ...mapState([
+                'selectType',   // 选择评价类型
+                'onlyContent'   // 选择是否只看有内容的评价
+            ]),
+            positives() {
+                // 遍历ratings数组
+                return this.ratings.filter((rating) => {
+                    return rating.rateType === POSITIVE;
+                });
+            },
+            negatives() {
+                // 遍历ratings数组
+                return this.ratings.filter((rating) => {
+                    return rating.rateType === NEGATIVE;
+                });
+            }
+        },
+        methods: {
+            // 点击事件: 选择评价类型
+            select(type, event) {
+                // 防止PC端多次点击
+                if (!event._constructed) {
+                    return;
+                }
+                this.$store.commit(types.SELECTTYPE_RATING, { type: type });
+            },
+            // 点击事件: 选择是否只看有内容的评价
+            toggleContent(event) {
+                if (!event._constructed) {
+                    return;
+                }
+
+                this.$store.commit(types.ONLYCONTENT_RATING);
             }
         }
     };

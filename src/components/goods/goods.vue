@@ -142,6 +142,7 @@
             },
             // 点击事件: 展开商品详情页组件food.vue
             selectFood(food, event) {
+                // 防止PC端多次点击
                 if (!event._constructed) {
                     return;
                 }
