@@ -96,6 +96,7 @@
             };
         },
         computed: {
+            // 监听selectType、onlyContent变化
             ...mapState([
                 'cartList',        // 加入购物车的商品列表
                 'selectType',      // 选择评价类型
