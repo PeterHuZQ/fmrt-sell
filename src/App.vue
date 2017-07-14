@@ -9,7 +9,8 @@
   </div>
 </template>
 
-<script type="text/ecmascript-6">
+ <script type="text/ecmascript-6">
+  import {urlParse} from './common/js/util';
   import header from './components/header/header.vue';
   import tab from './components/tab/tab.vue';
 
@@ -18,17 +19,26 @@
   export default {
     data() {
       return {
-        seller: {}
+        seller: {
+          id: (() => {
+            let queryParam = urlParse();
+            // console.log(queryParam);
+            return queryParam.id;
+          })()
+        }
       };
     },
     created() {
-      this.$http.get('/api/seller').then(response => {
+      this.$http.get('/api/seller?id=' + this.seller.id).then(response => {
             // get body data
             response = response.body;
             // console.log(response);
             if (response.errno === ERR_OK) {
-                this.seller = response.data;
+                // this.seller = response.data;
                 // console.log(this.seller);
+                // 给seller对象扩展属性的方法
+                this.seller = Object.assign({}, this.seller, response.data);
+                // console.log(this.seller.id);
             }
       }, response => {
             // error callback
