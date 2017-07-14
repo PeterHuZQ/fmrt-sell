@@ -70,7 +70,6 @@
 </template>
 
 <script type="text/ecmascript-6">
-    // import * as types from '../../store/mutation-types';
     import {mapState} from 'vuex';
 
     import BScroll from 'better-scroll';
