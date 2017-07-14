@@ -53,6 +53,19 @@
         </div>
         <!--分割线组件-->
         <split></split>
+        <!-- 商家实景区块 -->
+        <div class="pics">
+            <h1 class="title">商家实景</h1>
+            <div class="pic-wrapper" ref="picWrapper">
+                <ul class="pic-list" ref="picList">
+                    <li class="pic-item" :key="pic.id" v-for="pic in seller.pics">
+                        <img :src="pic" width="120" height="90">
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <!--分割线组件-->
+        <split></split>
       </div>
     </div>
 </template>
@@ -76,6 +89,8 @@
             this.$nextTick(() => {
                 // 初始化better-scroll
                 this._initScroll();
+                // 商家实景左右滚动
+                this._initPics();
             });
         },
         mounted: function () {
@@ -83,6 +98,8 @@
             this.$nextTick(() => {
                 // 初始化better-scroll
                 this._initScroll();
+                // 商家实景左右滚动
+                this._initPics();
             });
         },
         methods: {
@@ -94,6 +111,23 @@
                     });
                 } else {
                     this.scroll.refresh();
+                }
+            },
+            // 商家实景左右滚动
+            _initPics() {
+                if (this.seller.pics) {
+                    let picWidth = 120;
+                    let margin = 6;
+                    let width = (picWidth + margin) * this.seller.pics.length - margin;
+                    this.$refs.picList.style.width = width + 'px';
+                    if (!this.picScroll) {
+                        this.picScroll = new BScroll(this.$refs.picWrapper, {
+                            scrollX: true,
+                            eventPassthrough: 'vertical'
+                        });
+                    } else {
+                        this.picScroll.refresh();
+                    }
                 }
             }
         },
@@ -205,5 +239,28 @@
                     .text
                         line-height: 16px
                         font-size: 12px
-                        color: rgb(7, 17, 27)       
+                        color: rgb(7, 17, 27)
+        .pics
+            padding: 18px
+            .title
+                width: 100%
+                display: block
+                margin: 0
+                margin-bottom: 12px
+                line-height: 14px
+                color: rgb(7, 17, 27)
+                font-size: 14px
+            .pic-wrapper
+                width: 100%
+                overflow: hidden
+                white-space: nowrap
+                .pic-list
+                    font-size: 0
+                .pic-item
+                    display: inline-block
+                    margin-right: 6px
+                    width: 120px
+                    height: 90px
+                    &:last-child
+                        margin: 0       
 </style>
